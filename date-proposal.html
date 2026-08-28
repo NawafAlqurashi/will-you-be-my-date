@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>a little proposal 💌</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-top:#ffc3e6;
+    --sky-mid:#d98fe8;
+    --sky-bottom:#7c4fc9;
+    --panel:#fff0f8;
+    --ink:#530f3c;
+    --accent:#e63d78;
+    --accent-dark:#a8235a;
+    --accent-2:#7fe0ff;
+    --accent-2-dark:#2fa8c9;
+    --shadow:#3a0a2b;
+    --cream:#fff8fb;
+    --page-bg:#22091b;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    min-height:100dvh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+      radial-gradient(circle at 20% 15%, #3a1130 0%, transparent 45%),
+      radial-gradient(circle at 85% 80%, #3a1130 0%, transparent 40%),
+      var(--page-bg);
+    font-family:'VT323', monospace;
+    color:var(--ink);
+    padding:24px 14px;
+    overflow-x:hidden;
+  }
+  .page-label{
+    position:fixed;
+    top:18px;
+    left:50%;
+    transform:translateX(-50%);
+    font-family:'VT323', monospace;
+    font-size:15px;
+    letter-spacing:.12em;
+    color:#f2c9e4;
+    opacity:.55;
+    text-transform:uppercase;
+  }
+
+  /* ---------- console ---------- */
+  .console{
+    position:relative;
+    width:min(92vw, 400px);
+    aspect-ratio:9/16;
+    max-height:min(88dvh, 780px);
+    border-radius:2px;
+    background:var(--shadow);
+    padding:8px;
+    clip-path:polygon(
+      18px 0, calc(100% - 18px) 0, 100% 18px, 100% calc(100% - 18px),
+      calc(100% - 18px) 100%, 18px 100%, 0 calc(100% - 18px), 0 18px
+    );
+    box-shadow: 0 22px 50px rgba(0,0,0,.55), 0 0 0 3px var(--accent-dark) inset;
+  }
+  .screen-window{
+    position:relative;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    clip-path:polygon(
+      14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px),
+      calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px
+    );
+    background:linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 55%, var(--sky-bottom) 100%);
+  }
+
+  /* checker texture */
+  .screen-window::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(45deg, rgba(255,255,255,.10) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.10) 75%),
+      linear-gradient(45deg, rgba(255,255,255,.10) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.10) 75%);
+    background-size:24px 24px;
+    background-position:0 0, 12px 12px;
+    opacity:.35;
+    pointer-events:none;
+  }
+
+  /* clouds */
+  .cloud{
+    position:absolute;
+    background:#fff;
+    opacity:.85;
+    clip-path:polygon(10% 60%,10% 40%,25% 40%,25% 20%,55% 20%,55% 10%,80% 10%,80% 30%,95% 30%,95% 55%,85% 55%,85% 70%,15% 70%,15% 60%);
+    animation:drift linear infinite;
+  }
+  .cloud.c1{ width:120px; height:44px; top:12%; left:-140px; animation-duration:26s; opacity:.9;}
+  .cloud.c2{ width:90px; height:34px; top:20%; left:-120px; animation-duration:34s; animation-delay:-10s; opacity:.7;}
+  .cloud.c3{ width:150px; height:52px; top:8%; left:-170px; animation-duration:42s; animation-delay:-22s; opacity:.6;}
+  @keyframes drift{
+    to{ transform:translateX(calc(100vw + 200px)); }
+  }
+
+  /* mountains */
+  .mtn{
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:34%;
+  }
+  .mtn.back{
+    background:#e88fd6;
+    opacity:.55;
+    clip-path:polygon(0% 60%,8% 40%,18% 55%,30% 30%,42% 52%,55% 20%,68% 48%,80% 34%,92% 56%,100% 42%,100% 100%,0% 100%);
+  }
+  .mtn.front{
+    height:22%;
+    background:#c34f9e;
+    clip-path:polygon(0% 70%,12% 45%,22% 62%,35% 38%,48% 60%,60% 30%,74% 58%,86% 40%,100% 64%,100% 100%,0% 100%);
+  }
+
+  /* sparkles */
+  .spark{
+    position:absolute;
+    width:8px; height:8px;
+    background:#fff;
+    opacity:0;
+    clip-path:polygon(50% 0,65% 35%,100% 50%,65% 65%,50% 100%,35% 65%,0 50%,35% 35%);
+    animation:twinkle 3.6s ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{opacity:0; transform:scale(.6);}
+    50%{opacity:.9; transform:scale(1);}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .cloud{animation:none;}
+    .spark{animation:none; opacity:.5;}
+  }
+
+  /* ---------- screens ---------- */
+  .screen{
+    position:absolute; inset:0;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    padding:9% 8% 10%;
+    text-align:center;
+  }
+  .screen.active{
+    display:flex;
+    animation:pop-in .4s ease both;
+  }
+  @keyframes pop-in{
+    from{ opacity:0; transform:translateY(14px) scale(.98); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
+  }
+
+  .portrait{
+    width:104px; height:104px;
+    background:var(--cream);
+    border:3px solid var(--accent);
+    clip-path:polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px);
+    box-shadow:4px 4px 0 var(--shadow);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    flex:0 0 auto;
+  }
+
+  .pixel-title{
+    font-family:'Press Start 2P', monospace;
+    color:var(--accent-dark);
+    text-shadow:2px 2px 0 var(--cream), 4px 4px 0 var(--shadow);
+    font-size:clamp(16px, 5.4vw, 23px);
+    line-height:1.5;
+    margin:0;
+    letter-spacing:.02em;
+  }
+  .pixel-title.small{ font-size:clamp(13px, 4.4vw, 18px); }
+  .subtitle{
+    font-size:clamp(15px,4vw,19px);
+    color:var(--ink);
+    margin:-6px 0 0;
+    opacity:.85;
+  }
+
+  .choices{ display:flex; gap:14px; margin-top:2px; }
+
+  .btn{
+    font-family:'VT323', monospace;
+    font-size:19px;
+    letter-spacing:.06em;
+    padding:11px 22px;
+    background:var(--panel);
+    color:var(--accent-dark);
+    border:3px solid var(--accent);
+    clip-path:polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+    box-shadow:3px 3px 0 var(--shadow);
+    cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease, background .2s ease;
+  }
+  .btn:hover{ transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--shadow); }
+  .btn:active{ transform:translate(2px,2px); box-shadow:0 0 0 var(--shadow); }
+  .btn:focus-visible{ outline:3px solid #fff; outline-offset:2px; }
+
+  .btn-yes{ background:var(--accent); color:#fff; }
+  .btn-continue, .btn-lock{
+    background:var(--accent-2);
+    color:#0c3d47;
+    border-color:var(--accent-2-dark);
+    box-shadow:3px 3px 0 #1c5764;
+  }
+  .btn-continue:hover, .btn-lock:hover{ box-shadow:4px 4px 0 #1c5764; }
+  .btn-continue:active, .btn-lock:active{ box-shadow:0 0 0 #1c5764; }
+  .btn-continue:disabled, .btn-lock:disabled{
+    opacity:.45; cursor:not-allowed; transform:none !important; box-shadow:3px 3px 0 #1c5764 !important;
+  }
+  .btn-restart{ background:var(--panel); color:var(--accent-dark); margin-top:2px; }
+
+  .plead-msg{
+    min-height:20px;
+    font-size:17px;
+    color:var(--accent-dark);
+    max-width:240px;
+    margin:0;
+  }
+
+  .pixel-input{
+    font-family:'VT323', monospace;
+    font-size:19px;
+    text-align:center;
+    padding:9px 14px;
+    background:var(--cream);
+    color:var(--accent-dark);
+    border:3px solid var(--accent);
+    clip-path:polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+    box-shadow:3px 3px 0 var(--shadow);
+    width:min(78%, 220px);
+  }
+  .pixel-input:focus-visible{ outline:3px solid #fff; outline-offset:2px; }
+
+  .activity-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+    width:100%;
+  }
+  .activity-btn{
+    font-family:'VT323', monospace;
+    font-size:15px;
+    letter-spacing:.02em;
+    padding:11px 4px;
+    background:var(--cream);
+    color:var(--accent-dark);
+    border:3px solid var(--accent);
+    clip-path:polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
+    box-shadow:3px 3px 0 var(--shadow);
+    cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease, background .15s ease, color .15s ease;
+  }
+  .activity-btn:hover{ transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--shadow); }
+  .activity-btn.selected{
+    background:var(--accent);
+    color:#fff;
+    transform:translate(1px,1px);
+    box-shadow:2px 2px 0 var(--shadow);
+  }
+  .activity-btn:focus-visible{ outline:3px solid #fff; outline-offset:2px; }
+
+  .ticket{
+    background:var(--cream);
+    border:3px solid var(--accent);
+    clip-path:polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px);
+    box-shadow:4px 4px 0 var(--shadow);
+    padding:16px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    font-size:17px;
+    color:var(--ink);
+    width:100%;
+  }
+  .ticket b{ color:var(--accent-dark); }
+
+  /* ---------- cat mascot ---------- */
+  .cat{ position:relative; width:76px; height:70px; }
+  .cat .ear{
+    position:absolute; top:-14px;
+    width:0; height:0;
+    border-left:13px solid transparent;
+    border-right:13px solid transparent;
+    border-bottom:22px solid var(--accent-dark);
+  }
+  .cat .ear::after{
+    content:"";
+    position:absolute; top:9px; left:-8px;
+    width:0; height:0;
+    border-left:8px solid transparent;
+    border-right:8px solid transparent;
+    border-bottom:13px solid var(--cream);
+  }
+  .cat .ear.left{ left:2px; transform:rotate(-8deg); }
+  .cat .ear.right{ right:2px; transform:rotate(8deg); }
+  .cat .head{
+    position:absolute; left:0; top:6px; width:76px; height:64px;
+    background:var(--cream);
+    border:3px solid var(--accent-dark);
+    border-radius:38px 38px 32px 32px;
+  }
+  .cat .eye{
+    position:absolute; top:30px; width:7px; height:9px;
+    background:var(--ink); border-radius:2px;
+  }
+  .cat .eye.l{ left:22px; } .cat .eye.r{ right:22px; }
+  .cat .blush{
+    position:absolute; top:42px; width:9px; height:6px;
+    background:#ff9dc2; border-radius:50%; opacity:.8;
+  }
+  .cat .blush.l{ left:12px; } .cat .blush.r{ right:12px; }
+  .cat .mouth{
+    position:absolute; left:50%; top:44px; transform:translateX(-50%);
+    width:12px; height:6px;
+    border-bottom:3px solid var(--ink);
+    border-radius:0 0 10px 10px;
+  }
+  .cat .tear{
+    position:absolute; top:38px; left:16px;
+    width:4px; height:8px; background:#7fd4ff; border-radius:2px 2px 6px 6px;
+    animation:drip 1.4s ease-in infinite;
+  }
+  @keyframes drip{ 0%{ opacity:0; transform:translateY(0);} 30%{opacity:1;} 100%{ opacity:0; transform:translateY(10px);} }
+
+  /* mood variants */
+  .cat.mood-shy .eye{ height:6px; top:32px; }
+  .cat.mood-shy .mouth{ width:8px; }
+
+  .cat.mood-sad .eye{ transform:rotate(15deg); }
+  .cat.mood-sad .eye.r{ transform:rotate(-15deg); }
+  .cat.mood-sad .mouth{ border-radius:10px 10px 0 0; border-bottom:none; border-top:3px solid var(--ink); top:46px; }
+
+  .cat.mood-happy .eye{ height:3px; top:33px; border-radius:0 0 4px 4px; }
+  .cat.mood-happy .mouth{ width:16px; height:8px; border-radius:0 0 14px 14px; }
+
+  .cat.mood-hope .eye{ width:8px; height:10px; top:29px; }
+  .cat.mood-excited .eye{ height:3px; top:33px; border-radius:0 0 4px 4px; }
+  .cat.mood-excited .mouth{ width:18px; height:9px; border-radius:0 0 16px 16px; }
+
+  .cat.mood-love .eye{ display:none; }
+  .cat.mood-love .heart-eye{
+    position:absolute; top:27px; font-size:13px; color:var(--accent); line-height:1;
+  }
+  .cat.mood-love .heart-eye.l{ left:18px; } .cat.mood-love .heart-eye.r{ right:18px; }
+  .cat.mood-love .mouth{ width:14px; height:7px; border-radius:0 0 12px 12px; }
+
+  footer.credit{
+    position:fixed; bottom:10px; left:50%; transform:translateX(-50%);
+    font-size:12px; color:#e9c3dd; opacity:.4; letter-spacing:.05em;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-label">✦ open when ready ✦</div>
+
+<div class="console">
+  <div class="screen-window" id="screenWindow">
+
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+    <div class="spark" style="top:18%; left:16%;"></div>
+    <div class="spark" style="top:30%; left:78%; animation-delay:-1.2s;"></div>
+    <div class="spark" style="top:12%; left:60%; animation-delay:-2.4s;"></div>
+    <div class="mtn back"></div>
+    <div class="mtn front"></div>
+
+    <!-- 1: ask -->
+    <section class="screen active" data-screen="ask">
+      <div class="portrait">
+        <div class="cat mood-shy" id="askCat">
+          <div class="ear left"></div><div class="ear right"></div>
+          <div class="head"></div>
+          <div class="eye l"></div><div class="eye r"></div>
+          <div class="blush l"></div><div class="blush r"></div>
+          <div class="mouth"></div>
+        </div>
+      </div>
+      <h1 class="pixel-title">Will you go<br>on a date<br>with me?</h1>
+      <div class="choices">
+        <button class="btn btn-yes" id="yesBtn">YES</button>
+        <button class="btn" id="noBtn">No</button>
+      </div>
+      <p class="plead-msg" id="pleadMsg">&nbsp;</p>
+    </section>
+
+    <!-- 2: yay -->
+    <section class="screen" data-screen="yay">
+      <div class="portrait">
+        <div class="cat mood-happy">
+          <div class="ear left"></div><div class="ear right"></div>
+          <div class="head"></div>
+          <div class="eye l"></div><div class="eye r"></div>
+          <div class="blush l"></div><div class="blush r"></div>
+          <div class="mouth"></div>
+        </div>
+      </div>
+      <h1 class="pixel-title">YAY!</h1>
+      <p class="subtitle">I'm so glad u said yes.</p>
+      <button class="btn btn-continue" data-next="date">PRESS TO CONTINUE →</button>
+    </section>
+
+    <!-- 3: pick date -->
+    <section class="screen" data-screen="date">
+      <div class="portrait">
+        <div class="cat mood-hope">
+          <div class="ear left"></div><div class="ear right"></div>
+          <div class="head"></div>
+          <div class="eye l"></div><div class="eye r"></div>
+          <div class="blush l"></div><div class="blush r"></div>
+          <div class="mouth"></div>
+        </div>
+      </div>
+      <h2 class="pixel-title small">PICK A DATE</h2>
+      <p class="subtitle">Choose the day for our cute little plan.</p>
+      <input type="date" id="dateInput" class="pixel-input">
+      <button class="btn btn-continue" id="dateContinue" disabled>CONTINUE →</button>
+    </section>
+
+    <!-- 4: activity -->
+    <section class="screen" data-screen="activity">
+      <div class="portrait">
+        <div class="cat mood-excited">
+          <div class="ear left"></div><div class="ear right"></div>
+          <div class="head"></div>
+          <div class="eye l"></div><div class="eye r"></div>
+          <div class="blush l"></div><div class="blush r"></div>
+          <div class="mouth"></div>
+        </div>
+      </div>
+      <h2 class="pixel-title small">WHAT WOULD YOU<br>LIKE TO DO?</h2>
+      <div class="activity-grid" id="activityGrid">
+        <button class="activity-btn">DINNER DATE</button>
+        <button class="activity-btn">MOVIE NIGHT</button>
+        <button class="activity-btn">COFFEE &amp; WALK</button>
+        <button class="activity-btn">PICNIC</button>
+        <button class="activity-btn">MINI GOLF</button>
+        <button class="activity-btn">SURPRISE ME</button>
+      </div>
+      <button class="btn btn-lock" id="lockBtn" disabled>LOCK IT IN 🔒</button>
+    </section>
+
+    <!-- 5: confirm -->
+    <section class="screen" data-screen="confirm">
+      <div class="portrait">
+        <div class="cat mood-love">
+          <div class="ear left"></div><div class="ear right"></div>
+          <div class="head"></div>
+          <span class="heart-eye l">♥</span><span class="heart-eye r">♥</span>
+          <div class="blush l"></div><div class="blush r"></div>
+          <div class="mouth"></div>
+        </div>
+      </div>
+      <h1 class="pixel-title">IT'S A DATE!</h1>
+      <div class="ticket">
+        <p>DATE: <b id="confirmDate">—</b></p>
+        <p>ACTIVITY: <b id="confirmActivity">—</b></p>
+      </div>
+      <button class="btn btn-restart" id="restartBtn">START OVER ↺</button>
+    </section>
+
+  </div>
+</div>
+
+<footer class="credit">made with love, one pixel at a time</footer>
+
+<script>
+(function(){
+  const screens = document.querySelectorAll('.screen');
+  function showScreen(id){
+    screens.forEach(s => s.classList.toggle('active', s.dataset.screen === id));
+  }
+
+  // --- screen 1: ask ---
+  const yesBtn = document.getElementById('yesBtn');
+  const noBtn = document.getElementById('noBtn');
+  const pleadMsg = document.getElementById('pleadMsg');
+  const askCat = document.getElementById('askCat');
+  const pleas = [
+    "wait... plz? 🥺",
+    "nooo don't do this to me",
+    "I'll bring your favorite snacks",
+    "pretty pleaseeee?",
+    "the offer still stands, just saying →"
+  ];
+  let pleaIndex = 0;
+  noBtn.addEventListener('click', () => {
+    pleadMsg.textContent = pleas[Math.min(pleaIndex, pleas.length - 1)];
+    pleaIndex++;
+    askCat.classList.remove('mood-shy');
+    askCat.classList.add('mood-sad');
+    const shrink = Math.max(0.55, 1 - pleaIndex * 0.09);
+    noBtn.style.transform = `scale(${shrink})`;
+    yesBtn.style.transform = `scale(${Math.min(1.28, 1 + pleaIndex * 0.045)})`;
+  });
+  yesBtn.addEventListener('click', () => showScreen('yay'));
+
+  // --- generic "continue" buttons via data-next ---
+  document.querySelectorAll('[data-next]').forEach(btn => {
+    btn.addEventListener('click', () => showScreen(btn.dataset.next));
+  });
+
+  // --- screen 3: date ---
+  const dateInput = document.getElementById('dateInput');
+  const dateContinue = document.getElementById('dateContinue');
+  const today = new Date();
+  dateInput.min = today.toISOString().split('T')[0];
+  dateInput.addEventListener('input', () => {
+    dateContinue.disabled = !dateInput.value;
+  });
+  dateContinue.addEventListener('click', () => {
+    if (!dateInput.value) return;
+    showScreen('activity');
+  });
+
+  // --- screen 4: activity ---
+  const activityGrid = document.getElementById('activityGrid');
+  const lockBtn = document.getElementById('lockBtn');
+  let chosenActivity = null;
+  activityGrid.addEventListener('click', (e) => {
+    const btn = e.target.closest('.activity-btn');
+    if (!btn) return;
+    activityGrid.querySelectorAll('.activity-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    chosenActivity = btn.textContent;
+    lockBtn.disabled = false;
+  });
+  lockBtn.addEventListener('click', () => {
+    if (!chosenActivity) return;
+    const chosenDate = new Date(dateInput.value + 'T00:00:00');
+    const formatted = chosenDate.toLocaleDateString('en-US', {
+      weekday: 'short', month: 'long', day: 'numeric', year: 'numeric'
+    });
+    document.getElementById('confirmDate').textContent = formatted;
+    document.getElementById('confirmActivity').textContent = chosenActivity;
+    showScreen('confirm');
+  });
+
+  // --- restart ---
+  document.getElementById('restartBtn').addEventListener('click', () => {
+    pleaIndex = 0;
+    pleadMsg.textContent = '\u00A0';
+    askCat.classList.remove('mood-sad');
+    askCat.classList.add('mood-shy');
+    noBtn.style.transform = 'scale(1)';
+    yesBtn.style.transform = 'scale(1)';
+    dateInput.value = '';
+    dateContinue.disabled = true;
+    activityGrid.querySelectorAll('.activity-btn').forEach(b => b.classList.remove('selected'));
+    chosenActivity = null;
+    lockBtn.disabled = true;
+    showScreen('ask');
+  });
+})();
+</script>
+</body>
+</html>
