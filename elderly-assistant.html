@@ -6,22 +6,28 @@
 <title>مساعد anb الذكي</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --anb-blue-1:#3a74e0;
-    --anb-blue-2:#0f2f72;
+    --anb-blue-1:#3f78e8;
+    --anb-blue-2:#0d2c6e;
+    --anb-blue-soft:#eaf0fd;
     --bg:#eef2f8;
     --card:#ffffff;
     --ink:#0b1b33;
-    --ink-soft:#4a5a72;
+    --ink-soft:#5b6b85;
     --green:#1f9d55;
-    --green-dark:#177f44;
+    --green-tint:#e5f7ec;
     --red:#d64545;
-    --red-dark:#b13333;
-    --border:#dbe4f2;
-    --radius:20px;
+    --red-dark:#a92f2f;
+    --red-tint:#fbeaea;
+    --border:#dde5f3;
+    --radius-lg:20px;
+    --radius-md:16px;
+    --radius-sm:12px;
     --font-scale:1;
+    --font-display:'Cairo', 'Tajawal', sans-serif;
+    --font-body:'Tajawal', sans-serif;
   }
   *{ box-sizing:border-box; }
   html,body{ height:100%; }
@@ -34,17 +40,18 @@
     background:
       radial-gradient(circle at 15% 10%, #dfe9fb 0%, transparent 45%),
       radial-gradient(circle at 85% 90%, #e6eefc 0%, transparent 45%),
-      #cdd9f0;
-    font-family:'Tajawal', sans-serif;
+      #ccd8f0;
+    font-family:var(--font-body);
     color:var(--ink);
     padding:20px 12px;
   }
   button{ font-family:inherit; }
+  .icon{ width:1em; height:1em; display:inline-block; flex:0 0 auto; }
 
   .phone{
     width:min(94vw, 400px);
     height:min(90dvh, 840px);
-    background:#000;
+    background:#111;
     border-radius:34px;
     padding:10px;
     box-shadow:0 24px 60px rgba(10,20,50,.35);
@@ -62,19 +69,22 @@
 
   .statusbar{
     display:flex; align-items:center; justify-content:space-between;
-    padding:10px 20px 2px;
-    font-size:.8rem;
+    padding:9px 20px 3px;
+    font-size:.78rem;
     font-weight:700;
+    font-variant-numeric:tabular-nums;
     color:#fff;
     background:linear-gradient(135deg, var(--anb-blue-1), var(--anb-blue-2));
   }
-  .statusbar span{ opacity:.95; }
+  .statusbar .sb-right{ display:flex; align-items:center; gap:6px; }
+  .statusbar .icon{ width:16px; height:16px; opacity:.95; }
+  .statusbar .icon.batt{ width:20px; height:11px; }
 
   /* ---------- header ---------- */
   .home-header{
     background:linear-gradient(135deg, var(--anb-blue-1), var(--anb-blue-2));
     color:#fff;
-    padding:14px 18px 22px;
+    padding:14px 18px 20px;
     position:relative;
     overflow:hidden;
     flex:0 0 auto;
@@ -88,40 +98,47 @@
   }
   .hh-top{ display:flex; align-items:center; gap:10px; position:relative; z-index:1; }
   .hh-avatar{
-    width:46px; height:46px; border-radius:50%;
+    width:44px; height:44px; border-radius:50%;
     background:rgba(255,255,255,.18);
     display:flex; align-items:center; justify-content:center;
-    font-size:1.3rem; flex:0 0 auto;
+    flex:0 0 auto;
     border:2px solid rgba(255,255,255,.5);
   }
+  .hh-avatar .icon{ width:22px; height:22px; }
   .hh-greet{ flex:1 1 auto; }
-  .hh-hello{ font-size:1.05rem; font-weight:700; }
+  .hh-hello{ font-family:var(--font-display); font-size:1.05rem; font-weight:800; }
   .hh-sub{ font-size:.82rem; opacity:.85; margin-top:1px; }
   .font-ctl{ display:flex; gap:6px; }
   .font-btn{
-    width:34px; height:34px; border-radius:10px;
+    width:32px; height:32px; border-radius:10px;
     background:rgba(255,255,255,.16);
     border:1px solid rgba(255,255,255,.4);
-    color:#fff; font-weight:800; font-size:.78rem;
+    color:#fff; font-weight:800; font-size:.76rem;
     cursor:pointer;
   }
   .hh-balance-row{
-    margin-top:16px; position:relative; z-index:1;
+    margin-top:14px; position:relative; z-index:1;
   }
   .hh-balance-label{ font-size:.85rem; opacity:.85; }
-  .hh-balance{ font-size:1.8rem; font-weight:800; margin-top:2px; letter-spacing:.02em; }
+  .hh-balance{
+    font-family:var(--font-display); font-size:1.9rem; font-weight:800;
+    margin-top:2px; letter-spacing:.01em; font-variant-numeric:tabular-nums;
+  }
 
   /* ---------- screen chrome ---------- */
   .screen-topbar{
     display:flex; align-items:center; justify-content:space-between;
-    padding:14px 18px 2px;
+    padding:12px 14px 0;
   }
   .link-btn{
+    display:flex; align-items:center; gap:5px;
     background:none; border:none; color:var(--anb-blue-2);
-    font-weight:700; font-size:.95rem; cursor:pointer; padding:6px 4px;
+    font-weight:700; font-size:.92rem; cursor:pointer; padding:7px 8px;
+    border-radius:10px;
   }
+  .link-btn:active{ background:rgba(15,47,114,.08); }
   .screen-title{
-    font-size:1.25rem; font-weight:800; padding:6px 18px 0;
+    font-family:var(--font-display); font-size:1.3rem; font-weight:800; padding:6px 18px 0;
   }
   .screen-desc{
     font-size:.95rem; color:var(--ink-soft); padding:4px 18px 0;
@@ -136,7 +153,7 @@
     flex-direction:column;
     gap:14px;
   }
-  .screen{ display:none; flex-direction:column; gap:14px; height:100%; }
+  .screen{ display:none; flex-direction:column; gap:14px; }
   .screen.active{ display:flex; animation:fade .25s ease both; }
   @keyframes fade{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
 
@@ -150,33 +167,46 @@
   .big-btn{
     background:var(--card);
     border:1px solid var(--border);
-    border-radius:var(--radius);
-    padding:18px 10px;
-    display:flex; flex-direction:column; align-items:center; gap:8px;
+    border-radius:var(--radius-lg);
+    padding:20px 10px;
+    display:flex; flex-direction:column; align-items:center; gap:10px;
     box-shadow:0 6px 16px rgba(20,40,90,.08);
     cursor:pointer;
-    min-height:110px;
+    min-height:118px;
     justify-content:center;
+    transition:transform .12s ease, box-shadow .12s ease;
   }
-  .big-btn:active{ transform:scale(.97); }
-  .bb-icon{ font-size:2rem; }
+  .big-btn:active{ transform:scale(.96); box-shadow:0 3px 8px rgba(20,40,90,.1); }
+  .bb-icon-wrap{
+    width:50px; height:50px; border-radius:15px;
+    background:var(--anb-blue-soft); color:var(--anb-blue-2);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .bb-icon-wrap .icon{ width:25px; height:25px; }
   .bb-label{ font-size:1rem; font-weight:700; color:var(--ink); text-align:center; line-height:1.3; }
-  .big-btn.urgent{ background:#fdeeee; border-color:#f3caca; }
+  .big-btn.urgent{ background:var(--red-tint); border-color:#f2caca; }
+  .big-btn.urgent .bb-icon-wrap{ background:#fff; color:var(--red-dark); }
   .big-btn.urgent .bb-label{ color:var(--red-dark); }
+
+  .reassure{
+    text-align:center; color:var(--ink-soft); font-size:.88rem;
+    padding:8px 20px; line-height:1.6;
+  }
 
   .mic-fab{
     align-self:center;
-    display:flex; align-items:center; gap:10px;
+    display:flex; align-items:center; gap:9px;
     background:var(--anb-blue-2);
     color:#fff;
     border:none;
     border-radius:999px;
-    padding:12px 22px;
+    padding:13px 24px;
     font-size:1rem; font-weight:700;
     box-shadow:0 10px 24px rgba(15,47,114,.35);
     cursor:pointer;
     animation:pulse 2.4s ease-in-out infinite;
   }
+  .mic-fab .icon{ width:19px; height:19px; }
   @keyframes pulse{
     0%,100%{ box-shadow:0 10px 24px rgba(15,47,114,.35); }
     50%{ box-shadow:0 10px 30px rgba(15,47,114,.55), 0 0 0 8px rgba(15,47,114,.08); }
@@ -189,35 +219,40 @@
     display:flex; align-items:center; gap:14px;
     background:var(--card);
     border:1px solid var(--border);
-    border-radius:16px;
-    padding:14px 16px;
+    border-radius:var(--radius-md);
+    padding:13px 16px;
     cursor:pointer;
     box-shadow:0 4px 12px rgba(20,40,90,.06);
+    transition:transform .1s ease;
   }
   .contact-row:active{ transform:scale(.98); }
   .contact-avatar{
-    width:48px; height:48px; border-radius:50%;
-    background:#eaf0fd;
+    width:46px; height:46px; border-radius:50%;
+    background:var(--anb-blue-soft); color:var(--anb-blue-2);
     display:flex; align-items:center; justify-content:center;
-    font-size:1.4rem; flex:0 0 auto;
+    flex:0 0 auto;
   }
+  .contact-avatar .icon{ width:22px; height:22px; }
   .contact-name{ font-size:1.05rem; font-weight:700; }
 
   /* ---------- amount step ---------- */
   .amount-display{
     text-align:center;
+    font-family:var(--font-display);
     font-size:2.1rem;
     font-weight:800;
+    font-variant-numeric:tabular-nums;
     color:var(--anb-blue-2);
     background:var(--card);
     border:1px solid var(--border);
-    border-radius:16px;
+    border-radius:var(--radius-md);
     padding:18px 10px;
   }
   .quick-chips{ display:flex; gap:8px; justify-content:center; }
   .chip{
-    background:#eaf0fd; border:1px solid var(--border); color:var(--anb-blue-2);
-    border-radius:999px; padding:8px 16px; font-weight:700; font-size:.9rem; cursor:pointer;
+    background:var(--anb-blue-soft); border:1px solid var(--border); color:var(--anb-blue-2);
+    border-radius:999px; padding:8px 18px; font-weight:700; font-size:.9rem; cursor:pointer;
+    font-variant-numeric:tabular-nums;
   }
   .keypad{
     display:grid;
@@ -225,67 +260,83 @@
     gap:8px;
   }
   .key{
-    background:var(--card); border:1px solid var(--border); border-radius:14px;
-    padding:14px 0; font-size:1.25rem; font-weight:700; cursor:pointer;
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius-sm);
+    padding:14px 0; font-size:1.3rem; font-weight:700; cursor:pointer;
     box-shadow:0 3px 8px rgba(20,40,90,.06);
+    font-variant-numeric:tabular-nums;
+    display:flex; align-items:center; justify-content:center;
   }
-  .key:active{ transform:scale(.95); }
-  .key.wide{ font-size:1rem; }
+  .key:active{ transform:scale(.94); background:var(--anb-blue-soft); }
+  .key.wide{ font-size:.92rem; }
+  .key .icon{ width:20px; height:20px; }
 
   /* ---------- buttons ---------- */
   .primary-btn{
-    background:var(--green); color:#fff; border:none; border-radius:16px;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    background:var(--green); color:#fff; border:none; border-radius:var(--radius-md);
     padding:16px; font-size:1.1rem; font-weight:800; cursor:pointer;
     box-shadow:0 8px 18px rgba(31,157,85,.3);
   }
+  .primary-btn .icon{ width:20px; height:20px; }
   .primary-btn:disabled{ opacity:.4; cursor:not-allowed; box-shadow:none; }
   .primary-btn:active:not(:disabled){ transform:scale(.98); }
   .secondary-btn{
     background:var(--card); color:var(--anb-blue-2); border:1.5px solid var(--anb-blue-1);
-    border-radius:16px; padding:14px; font-size:1rem; font-weight:700; cursor:pointer;
+    border-radius:var(--radius-md); padding:14px; font-size:1rem; font-weight:700; cursor:pointer;
   }
   .call-btn{
-    background:var(--green); color:#fff; border:none; border-radius:16px;
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    background:var(--green); color:#fff; border:none; border-radius:var(--radius-md);
     padding:16px; font-size:1.1rem; font-weight:800; cursor:pointer; text-align:center;
-    text-decoration:none; display:block; box-shadow:0 8px 18px rgba(31,157,85,.3);
+    text-decoration:none; box-shadow:0 8px 18px rgba(31,157,85,.3);
   }
+  .call-btn .icon{ width:20px; height:20px; }
   .call-btn.whatsapp{ background:#25b358; }
 
   /* ---------- summary ticket ---------- */
   .ticket{
-    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg);
     padding:18px; display:flex; flex-direction:column; gap:12px;
     box-shadow:0 6px 16px rgba(20,40,90,.08);
   }
-  .ticket-row{ display:flex; justify-content:space-between; font-size:1rem; }
-  .ticket-row b{ color:var(--ink); font-size:1.1rem; }
+  .ticket-row{ display:flex; justify-content:space-between; align-items:baseline; font-size:1rem; }
+  .ticket-row b{ color:var(--ink); font-size:1.1rem; font-variant-numeric:tabular-nums; }
   .ticket-label{ color:var(--ink-soft); }
 
   .success-wrap{
     display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center;
-    padding:20px 8px;
+    padding:18px 8px;
   }
   .success-check{
-    width:76px; height:76px; border-radius:50%;
-    background:#e5f7ec; color:var(--green);
-    display:flex; align-items:center; justify-content:center; font-size:2.4rem;
+    width:74px; height:74px; border-radius:50%;
+    background:var(--green-tint); color:var(--green);
+    display:flex; align-items:center; justify-content:center;
   }
-  .success-title{ font-size:1.3rem; font-weight:800; }
-  .success-sub{ color:var(--ink-soft); font-size:.95rem; }
+  .success-check .icon{ width:36px; height:36px; }
+  .success-title{ font-family:var(--font-display); font-size:1.3rem; font-weight:800; }
+  .success-sub{ color:var(--ink-soft); font-size:.95rem; max-width:26ch; }
 
   /* ---------- list rows (bills / statement) ---------- */
   .list-row{
     display:flex; align-items:center; justify-content:space-between; gap:10px;
-    background:var(--card); border:1px solid var(--border); border-radius:16px;
-    padding:14px 16px; box-shadow:0 4px 12px rgba(20,40,90,.06);
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius-md);
+    padding:13px 16px; box-shadow:0 4px 12px rgba(20,40,90,.06);
   }
   .list-row .lr-main{ display:flex; align-items:center; gap:12px; }
-  .list-row .lr-icon{ font-size:1.4rem; }
+  .lr-icon-wrap{
+    width:40px; height:40px; border-radius:12px; flex:0 0 auto;
+    background:var(--anb-blue-soft); color:var(--anb-blue-2);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .lr-icon-wrap.in{ background:var(--green-tint); color:var(--green); }
+  .lr-icon-wrap.out{ background:var(--red-tint); color:var(--red-dark); }
+  .lr-icon-wrap .icon{ width:19px; height:19px; }
   .list-row .lr-name{ font-weight:700; font-size:1rem; }
   .list-row .lr-sub{ font-size:.82rem; color:var(--ink-soft); }
+  .lr-amt{ font-weight:800; font-variant-numeric:tabular-nums; }
   .mini-btn{
     background:var(--anb-blue-1); color:#fff; border:none; border-radius:10px;
-    padding:8px 14px; font-weight:700; font-size:.85rem; cursor:pointer;
+    padding:9px 16px; font-weight:700; font-size:.85rem; cursor:pointer;
   }
   .mini-btn.paid{ background:#9aa5b5; }
 
@@ -298,18 +349,21 @@
     padding:10px 12px;
   }
   .ab-avatar{
-    width:40px; height:40px; border-radius:50%; flex:0 0 auto;
+    width:38px; height:38px; border-radius:50%; flex:0 0 auto;
     background:linear-gradient(135deg, var(--anb-blue-1), var(--anb-blue-2));
-    color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.1rem;
+    color:#fff; display:flex; align-items:center; justify-content:center;
   }
+  .ab-avatar .icon{ width:19px; height:19px; }
   .ab-text{
-    flex:1 1 auto; font-size:.88rem; line-height:1.35; color:var(--ink);
+    flex:1 1 auto; font-size:.87rem; line-height:1.35; color:var(--ink);
   }
   .ab-controls{ display:flex; flex-direction:column; gap:4px; }
   .ab-btn{
-    width:34px; height:34px; border-radius:10px; border:1px solid var(--border);
-    background:#f3f6fc; font-size:1rem; cursor:pointer;
+    width:32px; height:32px; border-radius:10px; border:1px solid var(--border);
+    background:#f3f6fc; cursor:pointer; color:var(--anb-blue-2);
+    display:flex; align-items:center; justify-content:center;
   }
+  .ab-btn .icon{ width:16px; height:16px; }
 
   /* ---------- bottom nav ---------- */
   .bottom-nav{
@@ -320,11 +374,11 @@
     padding:8px 4px 10px;
   }
   .nav-item{
-    flex:1; display:flex; flex-direction:column; align-items:center; gap:2px;
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
     background:none; border:none; color:var(--ink-soft); font-size:.72rem; font-weight:600;
     cursor:pointer; padding:4px 0;
   }
-  .nav-item .ni-icon{ font-size:1.25rem; }
+  .nav-item .icon{ width:21px; height:21px; }
   .nav-item.active{ color:var(--anb-blue-2); }
 
   /* ---------- overlay (FAQ) ---------- */
@@ -346,34 +400,70 @@
     overflow-y:auto;
   }
   .sheet-head{ display:flex; align-items:center; justify-content:space-between; }
-  .sheet-title{ font-size:1.15rem; font-weight:800; }
+  .sheet-title{ display:flex; align-items:center; gap:8px; font-family:var(--font-display); font-size:1.15rem; font-weight:800; color:var(--anb-blue-2); }
+  .sheet-title .icon{ width:20px; height:20px; }
   .faq-item{
-    background:#f3f6fc; border:1px solid var(--border); border-radius:14px; padding:12px 14px;
+    background:#f3f6fc; border:1px solid var(--border); border-radius:var(--radius-sm); padding:13px 14px;
     cursor:pointer;
   }
   .faq-q{ display:flex; align-items:center; justify-content:space-between; font-weight:700; font-size:.98rem; }
+  .faq-q .icon{ width:16px; height:16px; color:var(--ink-soft); transition:transform .15s ease; }
+  .faq-item.open .faq-q .icon{ transform:rotate(45deg); }
   .faq-a{
-    margin-top:8px; font-size:.9rem; color:var(--ink-soft); line-height:1.5;
+    margin-top:8px; font-size:.9rem; color:var(--ink-soft); line-height:1.55;
     display:none;
   }
   .faq-item.open .faq-a{ display:block; }
-  .faq-item.open{ background:#eaf0fd; border-color:var(--anb-blue-1); }
+  .faq-item.open{ background:var(--anb-blue-soft); border-color:var(--anb-blue-1); }
 </style>
 </head>
 <body>
+
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+<defs>
+<symbol id="i-transfer" viewBox="0 0 24 24"><path d="M3 8h14M13 3l4 5-4 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 16H7m4 5-4-5 4-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 2h12v20l-2.5-1.8L13 22l-2.5-1.8L8 22l-2-1.8V2z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.5 7.5h7M8.5 11.5h7M8.5 15.5h4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+<symbol id="i-list" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="3" height="3" rx=".5" fill="currentColor"/><path d="M10 6h10.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="3.5" y="10.5" width="3" height="3" rx=".5" fill="currentColor"/><path d="M10 12h10.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="3.5" y="16.5" width="3" height="3" rx=".5" fill="currentColor"/><path d="M10 18h10.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.7 10.9c1.4 2.7 3.6 4.9 6.4 6.4l2.1-2.1c.3-.3.8-.4 1.1-.2 1.1.4 2.3.6 3.5.6.6 0 1.1.5 1.1 1.1v3.2c0 .6-.5 1.1-1.1 1.1C10.4 21 3 13.6 3 4.2 3 3.6 3.5 3 4.1 3h3.2c.6 0 1.1.5 1.1 1.1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.3 1.1L6.7 10.9z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2.5" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5v3.2M9 21h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 9.8V20a1 1 0 0 0 1 1h4v-6.5h2V21h4a1 1 0 0 0 1-1V9.8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20.5c1.4-4.3 4.8-6 7.5-6s6.1 1.7 7.5 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 12.3l3 3 6-6.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-back" viewBox="0 0 24 24"><path d="M14.5 5.5l-6.5 6.5 6.5 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4.5 14h6l-1 8 9-12.5h-6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+<symbol id="i-mobile" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10.5 18h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+<symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 2.8s6.8 7.7 6.8 11.7A6.8 6.8 0 0 1 5.2 14.5c0-4 6.8-11.7 6.8-11.7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+<symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v14.5M12 18.5l-5-5M12 18.5l5-5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-up" viewBox="0 0 24 24"><path d="M12 20V5.5M12 5.5l-5 5M12 5.5l5 5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i-bot" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="11" rx="4" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 8V4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="3.3" r="1.3" fill="currentColor"/><circle cx="9" cy="13.5" r="1.3" fill="currentColor"/><circle cx="15" cy="13.5" r="1.3" fill="currentColor"/><path d="M9 16.8h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+<symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.7-5.7L20 8M20 8V4M20 8h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 12a8 8 0 0 1-13.7 5.7L4 16M4 16v4M4 16h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-sound-on" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M17 8.5a5 5 0 0 1 0 7M19.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+<symbol id="i-sound-off" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-whatsapp" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.3 8.6c.2-.5.5-.5.8-.5h.5c.2 0 .4 0 .6.4.2.5.7 1.6.7 1.7.1.1.1.3 0 .4-.1.2-.2.3-.3.5-.1.1-.3.3-.1.6.2.4.9 1.4 1.9 2.3 1.3 1.1 2.3 1.4 2.7 1.6.3.1.5.1.6-.1.2-.2.7-.8.9-1 .2-.2.4-.2.6-.1.2.1 1.5.7 1.7.8.2.1.4.2.4.3 0 .2 0 1-.4 1.5-.4.6-1.6 1.1-2.3 1.1-.6 0-1.7-.1-3.5-1.2-2.6-1.6-4.2-4.3-4.4-4.5-.1-.2-1-1.3-1-2.5 0-1.2.6-1.7.8-2z" fill="currentColor"/></symbol>
+<symbol id="i-signal" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="0.5" fill="currentColor"/><rect x="5.5" y="6" width="3" height="8" rx="0.5" fill="currentColor"/><rect x="11" y="3" width="3" height="11" rx="0.5" fill="currentColor"/><rect x="16.5" y="0" width="3" height="14" rx="0.5" fill="currentColor"/></symbol>
+<symbol id="i-battery" viewBox="0 0 26 14"><rect x="1" y="1" width="21" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="3" y="3" width="15" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="4.5" width="2.5" height="5" rx="1" fill="currentColor"/></symbol>
+</defs>
+</svg>
 
 <div class="phone">
   <div class="screenwrap" id="screenwrap">
 
     <div class="statusbar">
       <span>11:20</span>
-      <span>anb • مساعد ذكي</span>
+      <div class="sb-right">
+        <span>anb</span>
+        <svg class="icon"><use href="#i-signal"/></svg>
+        <span>4G</span>
+        <svg class="icon batt"><use href="#i-battery"/></svg>
+      </div>
     </div>
 
     <!-- header shown only on home -->
     <header class="home-header" id="homeHeader">
       <div class="hh-top">
-        <div class="hh-avatar">👤</div>
+        <div class="hh-avatar"><svg class="icon"><use href="#i-user"/></svg></div>
         <div class="hh-greet">
           <div class="hh-hello">هلا وغلا 👋</div>
           <div class="hh-sub">وش تبي تسوي اليوم؟</div>
@@ -391,8 +481,8 @@
 
     <!-- back/cancel bar shown on non-home screens -->
     <div class="screen-topbar" id="topbar" style="display:none;">
-      <button class="link-btn" id="backBtn">‹ رجوع</button>
-      <button class="link-btn" id="homeBtn">الرئيسية ✕</button>
+      <button class="link-btn" id="backBtn"><svg class="icon"><use href="#i-back"/></svg>رجوع</button>
+      <button class="link-btn" id="homeBtn">الرئيسية<svg class="icon"><use href="#i-close"/></svg></button>
     </div>
 
     <div class="content" id="content">
@@ -401,23 +491,24 @@
       <section class="screen active" data-screen="home">
         <div class="home-grid">
           <button class="big-btn" data-action="transfer-contact">
-            <span class="bb-icon">💸</span>
+            <span class="bb-icon-wrap"><svg class="icon"><use href="#i-transfer"/></svg></span>
             <span class="bb-label">حوّل فلوس</span>
           </button>
           <button class="big-btn" data-action="bills">
-            <span class="bb-icon">🧾</span>
+            <span class="bb-icon-wrap"><svg class="icon"><use href="#i-receipt"/></svg></span>
             <span class="bb-label">ادفع فاتورة</span>
           </button>
           <button class="big-btn" data-action="statement">
-            <span class="bb-icon">📋</span>
+            <span class="bb-icon-wrap"><svg class="icon"><use href="#i-list"/></svg></span>
             <span class="bb-label">آخر عملياتي</span>
           </button>
           <button class="big-btn urgent" data-action="agent">
-            <span class="bb-icon">☎️</span>
+            <span class="bb-icon-wrap"><svg class="icon"><use href="#i-phone"/></svg></span>
             <span class="bb-label">أبغى أتكلم مع أحد</span>
           </button>
         </div>
-        <button class="mic-fab" id="fabMic">🎙️ عندك سؤال؟ اسألني</button>
+        <button class="mic-fab" id="fabMic"><svg class="icon"><use href="#i-mic"/></svg>عندك سؤال؟ اسألني</button>
+        <p class="reassure">خذ راحتك، المساعد وياك خطوة بخطوة في أي وقت 🤍</p>
       </section>
 
       <!-- TRANSFER: pick contact -->
@@ -426,19 +517,19 @@
         <p class="screen-desc" style="padding:0;">اضغط على الاسم عشان تختاره</p>
         <div class="contact-list" id="contactList">
           <div class="contact-row" data-name="محمد (ابنك)">
-            <div class="contact-avatar">👨</div>
+            <div class="contact-avatar"><svg class="icon"><use href="#i-user"/></svg></div>
             <div class="contact-name">محمد (ابنك)</div>
           </div>
           <div class="contact-row" data-name="سارة (بنتك)">
-            <div class="contact-avatar">👩</div>
+            <div class="contact-avatar"><svg class="icon"><use href="#i-user"/></svg></div>
             <div class="contact-name">سارة (بنتك)</div>
           </div>
           <div class="contact-row" data-name="أبو خالد (صديقك)">
-            <div class="contact-avatar">🧔</div>
+            <div class="contact-avatar"><svg class="icon"><use href="#i-user"/></svg></div>
             <div class="contact-name">أبو خالد (صديقك)</div>
           </div>
           <div class="contact-row" data-name="حساب ثاني">
-            <div class="contact-avatar">➕</div>
+            <div class="contact-avatar"><svg class="icon"><use href="#i-plus"/></svg></div>
             <div class="contact-name">شخص ثاني (رقم آيبان)</div>
           </div>
         </div>
@@ -471,18 +562,18 @@
           <div class="ticket-row"><span class="ticket-label">تحويل لـ</span><b id="confirmName">—</b></div>
           <div class="ticket-row"><span class="ticket-label">المبلغ</span><b id="confirmAmount">—</b></div>
         </div>
-        <button class="primary-btn" id="confirmBtn">تأكيد التحويل ✅</button>
+        <button class="primary-btn" id="confirmBtn"><svg class="icon"><use href="#i-check"/></svg>تأكيد التحويل</button>
         <button class="secondary-btn" id="editAmountBtn">أبي أغيّر المبلغ</button>
       </section>
 
       <!-- TRANSFER: success -->
       <section class="screen" data-screen="transfer-success">
         <div class="success-wrap">
-          <div class="success-check">✓</div>
+          <div class="success-check"><svg class="icon"><use href="#i-check"/></svg></div>
           <div class="success-title">تم التحويل بنجاح!</div>
           <div class="success-sub" id="successSub">وصلت الفلوس على طول</div>
         </div>
-        <button class="primary-btn" id="successHomeBtn">رجوع للرئيسية</button>
+        <button class="primary-btn" id="successHomeBtn"><svg class="icon"><use href="#i-home"/></svg>رجوع للرئيسية</button>
       </section>
 
       <!-- BILLS -->
@@ -491,19 +582,19 @@
         <p class="screen-desc" style="padding:0;">اضغط "ادفع" جنب الفاتورة اللي تبيها</p>
         <div class="contact-list">
           <div class="list-row">
-            <div class="lr-main"><span class="lr-icon">💡</span>
+            <div class="lr-main"><span class="lr-icon-wrap"><svg class="icon"><use href="#i-bolt"/></svg></span>
               <div><div class="lr-name">فاتورة الكهرباء</div><div class="lr-sub">180 ريال</div></div>
             </div>
             <button class="mini-btn" data-bill="كهرباء">ادفع</button>
           </div>
           <div class="list-row">
-            <div class="lr-main"><span class="lr-icon">📱</span>
+            <div class="lr-main"><span class="lr-icon-wrap"><svg class="icon"><use href="#i-mobile"/></svg></span>
               <div><div class="lr-name">فاتورة الجوال</div><div class="lr-sub">65 ريال</div></div>
             </div>
             <button class="mini-btn" data-bill="جوال">ادفع</button>
           </div>
           <div class="list-row">
-            <div class="lr-main"><span class="lr-icon">💧</span>
+            <div class="lr-main"><span class="lr-icon-wrap"><svg class="icon"><use href="#i-drop"/></svg></span>
               <div><div class="lr-name">فاتورة الماء</div><div class="lr-sub">40 ريال</div></div>
             </div>
             <button class="mini-btn" data-bill="ماء">ادفع</button>
@@ -516,22 +607,22 @@
         <h2 class="screen-title" style="padding:0;">آخر عملياتك</h2>
         <div class="contact-list">
           <div class="list-row">
-            <div class="lr-main"><span class="lr-icon">⬇️</span>
+            <div class="lr-main"><span class="lr-icon-wrap in"><svg class="icon"><use href="#i-down"/></svg></span>
               <div><div class="lr-name">راتب</div><div class="lr-sub">أمس</div></div>
             </div>
-            <b style="color:var(--green);">+9,000</b>
+            <span class="lr-amt" style="color:var(--green);">+9,000</span>
           </div>
           <div class="list-row">
-            <div class="lr-main"><span class="lr-icon">⬆️</span>
+            <div class="lr-main"><span class="lr-icon-wrap out"><svg class="icon"><use href="#i-up"/></svg></span>
               <div><div class="lr-name">سحب صراف</div><div class="lr-sub">قبل يومين</div></div>
             </div>
-            <b style="color:var(--red);">-500</b>
+            <span class="lr-amt" style="color:var(--red-dark);">-500</span>
           </div>
           <div class="list-row">
-            <div class="lr-main"><span class="lr-icon">⬆️</span>
+            <div class="lr-main"><span class="lr-icon-wrap out"><svg class="icon"><use href="#i-up"/></svg></span>
               <div><div class="lr-name">فاتورة كهرباء</div><div class="lr-sub">قبل 3 أيام</div></div>
             </div>
-            <b style="color:var(--red);">-180</b>
+            <span class="lr-amt" style="color:var(--red-dark);">-180</span>
           </div>
         </div>
       </section>
@@ -539,55 +630,55 @@
       <!-- AGENT -->
       <section class="screen" data-screen="agent">
         <div class="success-wrap">
-          <div class="success-check" style="background:#eaf0fd; color:var(--anb-blue-2);">☎️</div>
+          <div class="success-check" style="background:var(--anb-blue-soft); color:var(--anb-blue-2);"><svg class="icon"><use href="#i-phone"/></svg></div>
           <div class="success-title">احنا موجودين نساعدك</div>
           <div class="success-sub">اضغط اتصال وبيرد عليك أحد فورًا، ما فيه انتظار طويل</div>
         </div>
-        <a class="call-btn" href="tel:8001234567">📞 اتصل بنا الحين</a>
-        <a class="call-btn whatsapp" href="https://wa.me/966500000000" target="_blank" rel="noopener">💬 راسلنا واتساب</a>
+        <a class="call-btn" href="tel:8001234567"><svg class="icon"><use href="#i-phone"/></svg>اتصل بنا الحين</a>
+        <a class="call-btn whatsapp" href="https://wa.me/966500000000" target="_blank" rel="noopener"><svg class="icon"><use href="#i-whatsapp"/></svg>راسلنا واتساب</a>
       </section>
 
     </div>
 
     <!-- assistant caption bar -->
     <div class="assistant-bar">
-      <div class="ab-avatar">🤖</div>
+      <div class="ab-avatar"><svg class="icon"><use href="#i-bot"/></svg></div>
       <div class="ab-text" id="assistantText">هلا وغلا! أنا مساعدك، اضغط على أي زر وبشرح لك كل خطوة، خذ راحتك 😊</div>
       <div class="ab-controls">
-        <button class="ab-btn" id="repeatBtn" title="كرر الشرح">🔁</button>
-        <button class="ab-btn" id="muteBtn" title="تشغيل/إيقاف الصوت">🔊</button>
+        <button class="ab-btn" id="repeatBtn" title="كرر الشرح"><svg class="icon"><use href="#i-repeat"/></svg></button>
+        <button class="ab-btn" id="muteBtn" title="تشغيل/إيقاف الصوت"><svg class="icon"><use id="muteIconUse" href="#i-sound-on"/></svg></button>
       </div>
     </div>
 
     <!-- bottom nav -->
     <nav class="bottom-nav">
-      <button class="nav-item active" data-nav="home"><span class="ni-icon">🏠</span>الرئيسية</button>
-      <button class="nav-item" data-nav="transfer-contact"><span class="ni-icon">💸</span>تحويل</button>
-      <button class="nav-item" data-nav="faq"><span class="ni-icon">🎙️</span>مساعد</button>
-      <button class="nav-item" data-nav="agent"><span class="ni-icon">☎️</span>مساعدة</button>
+      <button class="nav-item active" data-nav="home"><svg class="icon"><use href="#i-home"/></svg>الرئيسية</button>
+      <button class="nav-item" data-nav="transfer-contact"><svg class="icon"><use href="#i-transfer"/></svg>تحويل</button>
+      <button class="nav-item" data-nav="faq"><svg class="icon"><use href="#i-mic"/></svg>مساعد</button>
+      <button class="nav-item" data-nav="agent"><svg class="icon"><use href="#i-phone"/></svg>مساعدة</button>
     </nav>
 
     <!-- FAQ overlay -->
     <div class="overlay" id="faqOverlay">
       <div class="sheet">
         <div class="sheet-head">
-          <div class="sheet-title">🎙️ اسألني أي سؤال</div>
-          <button class="link-btn" id="faqClose">✕ إغلاق</button>
+          <div class="sheet-title"><svg class="icon"><use href="#i-mic"/></svg>اسألني أي سؤال</div>
+          <button class="link-btn" id="faqClose">إغلاق<svg class="icon"><use href="#i-close"/></svg></button>
         </div>
         <div class="faq-item" data-a="عشان تحول فلوس: اضغط زر (حوّل فلوس) بالرئيسية، بعدين اختار الشخص اللي تبي تحول له، بعدين اكتب المبلغ، وأخيرًا اضغط تأكيد. بس كذا، سهلة!">
-          <div class="faq-q">كيف أحول فلوس؟ <span>+</span></div>
+          <div class="faq-q">كيف أحول فلوس؟ <svg class="icon"><use href="#i-plus"/></svg></div>
           <div class="faq-a"></div>
         </div>
         <div class="faq-item" data-a="عشان تدفع فاتورة: اضغط زر (ادفع فاتورة) بالرئيسية، وبتشوف فواتيرك كلها قدامك، بس اضغط (ادفع) جنب الفاتورة اللي تبيها.">
-          <div class="faq-q">كيف أدفع فاتورة؟ <span>+</span></div>
+          <div class="faq-q">كيف أدفع فاتورة؟ <svg class="icon"><use href="#i-plus"/></svg></div>
           <div class="faq-a"></div>
         </div>
         <div class="faq-item" data-a="رصيدك مكتوب كبير في أعلى الشاشة الرئيسية على طول، ما تحتاج تدور عليه.">
-          <div class="faq-q">وين ألقى رصيدي؟ <span>+</span></div>
+          <div class="faq-q">وين ألقى رصيدي؟ <svg class="icon"><use href="#i-plus"/></svg></div>
           <div class="faq-a"></div>
         </div>
         <div class="faq-item" data-a="لا تشيل هم، اضغط زر (أبغى أتكلم مع أحد) بالأسفل، وراح يتصل فيك موظف يساعدك فورًا.">
-          <div class="faq-q">ضاعت بطاقتي، أسوي وش؟ <span>+</span></div>
+          <div class="faq-q">ضاعت بطاقتي، أسوي وش؟ <svg class="icon"><use href="#i-plus"/></svg></div>
           <div class="faq-a"></div>
         </div>
       </div>
@@ -659,9 +750,10 @@
     speak(assistantText.textContent);
   });
   const muteBtn = document.getElementById('muteBtn');
+  const muteIconUse = document.getElementById('muteIconUse');
   muteBtn.addEventListener('click', () => {
     voiceEnabled = !voiceEnabled;
-    muteBtn.textContent = voiceEnabled ? '🔊' : '🔇';
+    muteIconUse.setAttribute('href', voiceEnabled ? '#i-sound-on' : '#i-sound-off');
     if (!voiceEnabled && 'speechSynthesis' in window) speechSynthesis.cancel();
   });
 
