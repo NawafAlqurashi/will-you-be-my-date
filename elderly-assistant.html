@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مساعدك الذكي - anb</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --anb-blue-1:#3a74e0;
+    --anb-blue-2:#0f2f72;
+    --bg:#eef2f8;
+    --card:#ffffff;
+    --ink:#0b1b33;
+    --ink-soft:#4a5a72;
+    --green:#1f9d55;
+    --green-dark:#177f44;
+    --red:#d64545;
+    --red-dark:#b13333;
+    --border:#dbe4f2;
+    --radius:20px;
+    --font-scale:1;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    min-height:100dvh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+      radial-gradient(circle at 15% 10%, #dfe9fb 0%, transparent 45%),
+      radial-gradient(circle at 85% 90%, #e6eefc 0%, transparent 45%),
+      #cdd9f0;
+    font-family:'Tajawal', sans-serif;
+    color:var(--ink);
+    padding:20px 12px;
+  }
+  button{ font-family:inherit; }
+
+  .phone{
+    width:min(94vw, 400px);
+    height:min(90dvh, 840px);
+    background:#000;
+    border-radius:34px;
+    padding:10px;
+    box-shadow:0 24px 60px rgba(10,20,50,.35);
+  }
+  .screenwrap{
+    width:100%; height:100%;
+    background:var(--bg);
+    border-radius:26px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    font-size:calc(16px * var(--font-scale));
+  }
+
+  .statusbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 20px 2px;
+    font-size:.8rem;
+    font-weight:700;
+    color:#fff;
+    background:linear-gradient(135deg, var(--anb-blue-1), var(--anb-blue-2));
+  }
+  .statusbar span{ opacity:.95; }
+
+  /* ---------- header ---------- */
+  .home-header{
+    background:linear-gradient(135deg, var(--anb-blue-1), var(--anb-blue-2));
+    color:#fff;
+    padding:14px 18px 22px;
+    position:relative;
+    overflow:hidden;
+    flex:0 0 auto;
+  }
+  .home-header::after{
+    content:"";
+    position:absolute; inset:-40% -20% auto auto;
+    width:220px; height:220px;
+    background:radial-gradient(circle, rgba(255,255,255,.16), transparent 70%);
+    border-radius:50%;
+  }
+  .hh-top{ display:flex; align-items:center; gap:10px; position:relative; z-index:1; }
+  .hh-avatar{
+    width:46px; height:46px; border-radius:50%;
+    background:rgba(255,255,255,.18);
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.3rem; flex:0 0 auto;
+    border:2px solid rgba(255,255,255,.5);
+  }
+  .hh-greet{ flex:1 1 auto; }
+  .hh-hello{ font-size:1.05rem; font-weight:700; }
+  .hh-sub{ font-size:.82rem; opacity:.85; margin-top:1px; }
+  .font-ctl{ display:flex; gap:6px; }
+  .font-btn{
+    width:34px; height:34px; border-radius:10px;
+    background:rgba(255,255,255,.16);
+    border:1px solid rgba(255,255,255,.4);
+    color:#fff; font-weight:800; font-size:.78rem;
+    cursor:pointer;
+  }
+  .hh-balance-row{
+    margin-top:16px; position:relative; z-index:1;
+  }
+  .hh-balance-label{ font-size:.85rem; opacity:.85; }
+  .hh-balance{ font-size:1.8rem; font-weight:800; margin-top:2px; letter-spacing:.02em; }
+
+  /* ---------- screen chrome ---------- */
+  .screen-topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 18px 2px;
+  }
+  .link-btn{
+    background:none; border:none; color:var(--anb-blue-2);
+    font-weight:700; font-size:.95rem; cursor:pointer; padding:6px 4px;
+  }
+  .screen-title{
+    font-size:1.25rem; font-weight:800; padding:6px 18px 0;
+  }
+  .screen-desc{
+    font-size:.95rem; color:var(--ink-soft); padding:4px 18px 0;
+  }
+
+  /* ---------- content ---------- */
+  .content{
+    flex:1 1 auto;
+    overflow-y:auto;
+    padding:14px 16px 10px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .screen{ display:none; flex-direction:column; gap:14px; height:100%; }
+  .screen.active{ display:flex; animation:fade .25s ease both; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ---------- home grid ---------- */
+  .home-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-top:4px;
+  }
+  .big-btn{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:18px 10px;
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    box-shadow:0 6px 16px rgba(20,40,90,.08);
+    cursor:pointer;
+    min-height:110px;
+    justify-content:center;
+  }
+  .big-btn:active{ transform:scale(.97); }
+  .bb-icon{ font-size:2rem; }
+  .bb-label{ font-size:1rem; font-weight:700; color:var(--ink); text-align:center; line-height:1.3; }
+  .big-btn.urgent{ background:#fdeeee; border-color:#f3caca; }
+  .big-btn.urgent .bb-label{ color:var(--red-dark); }
+
+  .mic-fab{
+    align-self:center;
+    display:flex; align-items:center; gap:10px;
+    background:var(--anb-blue-2);
+    color:#fff;
+    border:none;
+    border-radius:999px;
+    padding:12px 22px;
+    font-size:1rem; font-weight:700;
+    box-shadow:0 10px 24px rgba(15,47,114,.35);
+    cursor:pointer;
+    animation:pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ box-shadow:0 10px 24px rgba(15,47,114,.35); }
+    50%{ box-shadow:0 10px 30px rgba(15,47,114,.55), 0 0 0 8px rgba(15,47,114,.08); }
+  }
+  @media (prefers-reduced-motion: reduce){ .mic-fab{ animation:none; } }
+
+  /* ---------- contact list ---------- */
+  .contact-list{ display:flex; flex-direction:column; gap:10px; }
+  .contact-row{
+    display:flex; align-items:center; gap:14px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:14px 16px;
+    cursor:pointer;
+    box-shadow:0 4px 12px rgba(20,40,90,.06);
+  }
+  .contact-row:active{ transform:scale(.98); }
+  .contact-avatar{
+    width:48px; height:48px; border-radius:50%;
+    background:#eaf0fd;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.4rem; flex:0 0 auto;
+  }
+  .contact-name{ font-size:1.05rem; font-weight:700; }
+
+  /* ---------- amount step ---------- */
+  .amount-display{
+    text-align:center;
+    font-size:2.1rem;
+    font-weight:800;
+    color:var(--anb-blue-2);
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:18px 10px;
+  }
+  .quick-chips{ display:flex; gap:8px; justify-content:center; }
+  .chip{
+    background:#eaf0fd; border:1px solid var(--border); color:var(--anb-blue-2);
+    border-radius:999px; padding:8px 16px; font-weight:700; font-size:.9rem; cursor:pointer;
+  }
+  .keypad{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:8px;
+  }
+  .key{
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    padding:14px 0; font-size:1.25rem; font-weight:700; cursor:pointer;
+    box-shadow:0 3px 8px rgba(20,40,90,.06);
+  }
+  .key:active{ transform:scale(.95); }
+  .key.wide{ font-size:1rem; }
+
+  /* ---------- buttons ---------- */
+  .primary-btn{
+    background:var(--green); color:#fff; border:none; border-radius:16px;
+    padding:16px; font-size:1.1rem; font-weight:800; cursor:pointer;
+    box-shadow:0 8px 18px rgba(31,157,85,.3);
+  }
+  .primary-btn:disabled{ opacity:.4; cursor:not-allowed; box-shadow:none; }
+  .primary-btn:active:not(:disabled){ transform:scale(.98); }
+  .secondary-btn{
+    background:var(--card); color:var(--anb-blue-2); border:1.5px solid var(--anb-blue-1);
+    border-radius:16px; padding:14px; font-size:1rem; font-weight:700; cursor:pointer;
+  }
+  .call-btn{
+    background:var(--green); color:#fff; border:none; border-radius:16px;
+    padding:16px; font-size:1.1rem; font-weight:800; cursor:pointer; text-align:center;
+    text-decoration:none; display:block; box-shadow:0 8px 18px rgba(31,157,85,.3);
+  }
+  .call-btn.whatsapp{ background:#25b358; }
+
+  /* ---------- summary ticket ---------- */
+  .ticket{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px; display:flex; flex-direction:column; gap:12px;
+    box-shadow:0 6px 16px rgba(20,40,90,.08);
+  }
+  .ticket-row{ display:flex; justify-content:space-between; font-size:1rem; }
+  .ticket-row b{ color:var(--ink); font-size:1.1rem; }
+  .ticket-label{ color:var(--ink-soft); }
+
+  .success-wrap{
+    display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center;
+    padding:20px 8px;
+  }
+  .success-check{
+    width:76px; height:76px; border-radius:50%;
+    background:#e5f7ec; color:var(--green);
+    display:flex; align-items:center; justify-content:center; font-size:2.4rem;
+  }
+  .success-title{ font-size:1.3rem; font-weight:800; }
+  .success-sub{ color:var(--ink-soft); font-size:.95rem; }
+
+  /* ---------- list rows (bills / statement) ---------- */
+  .list-row{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--card); border:1px solid var(--border); border-radius:16px;
+    padding:14px 16px; box-shadow:0 4px 12px rgba(20,40,90,.06);
+  }
+  .list-row .lr-main{ display:flex; align-items:center; gap:12px; }
+  .list-row .lr-icon{ font-size:1.4rem; }
+  .list-row .lr-name{ font-weight:700; font-size:1rem; }
+  .list-row .lr-sub{ font-size:.82rem; color:var(--ink-soft); }
+  .mini-btn{
+    background:var(--anb-blue-1); color:#fff; border:none; border-radius:10px;
+    padding:8px 14px; font-weight:700; font-size:.85rem; cursor:pointer;
+  }
+  .mini-btn.paid{ background:#9aa5b5; }
+
+  /* ---------- assistant bar ---------- */
+  .assistant-bar{
+    flex:0 0 auto;
+    display:flex; align-items:center; gap:10px;
+    background:#fff;
+    border-top:1px solid var(--border);
+    padding:10px 12px;
+  }
+  .ab-avatar{
+    width:40px; height:40px; border-radius:50%; flex:0 0 auto;
+    background:linear-gradient(135deg, var(--anb-blue-1), var(--anb-blue-2));
+    color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.1rem;
+  }
+  .ab-text{
+    flex:1 1 auto; font-size:.88rem; line-height:1.35; color:var(--ink);
+  }
+  .ab-controls{ display:flex; flex-direction:column; gap:4px; }
+  .ab-btn{
+    width:34px; height:34px; border-radius:10px; border:1px solid var(--border);
+    background:#f3f6fc; font-size:1rem; cursor:pointer;
+  }
+
+  /* ---------- bottom nav ---------- */
+  .bottom-nav{
+    flex:0 0 auto;
+    display:flex;
+    background:#fff;
+    border-top:1px solid var(--border);
+    padding:8px 4px 10px;
+  }
+  .nav-item{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:2px;
+    background:none; border:none; color:var(--ink-soft); font-size:.72rem; font-weight:600;
+    cursor:pointer; padding:4px 0;
+  }
+  .nav-item .ni-icon{ font-size:1.25rem; }
+  .nav-item.active{ color:var(--anb-blue-2); }
+
+  /* ---------- overlay (FAQ) ---------- */
+  .overlay{
+    position:absolute; inset:0;
+    background:rgba(10,20,50,.5);
+    display:none;
+    align-items:flex-end;
+    z-index:20;
+  }
+  .overlay.active{ display:flex; }
+  .sheet{
+    width:100%;
+    max-height:82%;
+    background:#fff;
+    border-radius:24px 24px 0 0;
+    padding:16px 16px 14px;
+    display:flex; flex-direction:column; gap:12px;
+    overflow-y:auto;
+  }
+  .sheet-head{ display:flex; align-items:center; justify-content:space-between; }
+  .sheet-title{ font-size:1.15rem; font-weight:800; }
+  .faq-item{
+    background:#f3f6fc; border:1px solid var(--border); border-radius:14px; padding:12px 14px;
+    cursor:pointer;
+  }
+  .faq-q{ display:flex; align-items:center; justify-content:space-between; font-weight:700; font-size:.98rem; }
+  .faq-a{
+    margin-top:8px; font-size:.9rem; color:var(--ink-soft); line-height:1.5;
+    display:none;
+  }
+  .faq-item.open .faq-a{ display:block; }
+  .faq-item.open{ background:#eaf0fd; border-color:var(--anb-blue-1); }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="screenwrap" id="screenwrap">
+
+    <div class="statusbar">
+      <span>11:20</span>
+      <span>anb • مساعد ذكي</span>
+    </div>
+
+    <!-- header shown only on home -->
+    <header class="home-header" id="homeHeader">
+      <div class="hh-top">
+        <div class="hh-avatar">👤</div>
+        <div class="hh-greet">
+          <div class="hh-hello">هلا وغلا 👋</div>
+          <div class="hh-sub">وش تبي تسوي اليوم؟</div>
+        </div>
+        <div class="font-ctl">
+          <button class="font-btn" id="fontMinus" aria-label="تصغير الخط">أ-</button>
+          <button class="font-btn" id="fontPlus" aria-label="تكبير الخط">أ+</button>
+        </div>
+      </div>
+      <div class="hh-balance-row">
+        <div class="hh-balance-label">رصيدك الحين</div>
+        <div class="hh-balance">12,450 ريال</div>
+      </div>
+    </header>
+
+    <!-- back/cancel bar shown on non-home screens -->
+    <div class="screen-topbar" id="topbar" style="display:none;">
+      <button class="link-btn" id="backBtn">‹ رجوع</button>
+      <button class="link-btn" id="homeBtn">الرئيسية ✕</button>
+    </div>
+
+    <div class="content" id="content">
+
+      <!-- HOME -->
+      <section class="screen active" data-screen="home">
+        <div class="home-grid">
+          <button class="big-btn" data-action="transfer-contact">
+            <span class="bb-icon">💸</span>
+            <span class="bb-label">حوّل فلوس</span>
+          </button>
+          <button class="big-btn" data-action="bills">
+            <span class="bb-icon">🧾</span>
+            <span class="bb-label">ادفع فاتورة</span>
+          </button>
+          <button class="big-btn" data-action="statement">
+            <span class="bb-icon">📋</span>
+            <span class="bb-label">آخر عملياتي</span>
+          </button>
+          <button class="big-btn urgent" data-action="agent">
+            <span class="bb-icon">☎️</span>
+            <span class="bb-label">أبغى أتكلم مع أحد</span>
+          </button>
+        </div>
+        <button class="mic-fab" id="fabMic">🎙️ عندك سؤال؟ اسألني</button>
+      </section>
+
+      <!-- TRANSFER: pick contact -->
+      <section class="screen" data-screen="transfer-contact">
+        <h2 class="screen-title" style="padding:0;">لمين تبي تحول؟</h2>
+        <p class="screen-desc" style="padding:0;">اضغط على الاسم عشان تختاره</p>
+        <div class="contact-list" id="contactList">
+          <div class="contact-row" data-name="محمد (ابنك)">
+            <div class="contact-avatar">👨</div>
+            <div class="contact-name">محمد (ابنك)</div>
+          </div>
+          <div class="contact-row" data-name="سارة (بنتك)">
+            <div class="contact-avatar">👩</div>
+            <div class="contact-name">سارة (بنتك)</div>
+          </div>
+          <div class="contact-row" data-name="أبو خالد (صديقك)">
+            <div class="contact-avatar">🧔</div>
+            <div class="contact-name">أبو خالد (صديقك)</div>
+          </div>
+          <div class="contact-row" data-name="حساب ثاني">
+            <div class="contact-avatar">➕</div>
+            <div class="contact-name">شخص ثاني (رقم آيبان)</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRANSFER: amount -->
+      <section class="screen" data-screen="transfer-amount">
+        <h2 class="screen-title" style="padding:0;">كم تبي تحول؟</h2>
+        <p class="screen-desc" style="padding:0;">اكتب المبلغ من الأرقام تحت</p>
+        <div class="amount-display" id="amountDisplay">٠ ريال</div>
+        <div class="quick-chips">
+          <button class="chip" data-amt="100">100</button>
+          <button class="chip" data-amt="200">200</button>
+          <button class="chip" data-amt="500">500</button>
+        </div>
+        <div class="keypad" id="keypad">
+          <button class="key">1</button><button class="key">2</button><button class="key">3</button>
+          <button class="key">4</button><button class="key">5</button><button class="key">6</button>
+          <button class="key">7</button><button class="key">8</button><button class="key">9</button>
+          <button class="key wide" data-clear="1">مسح الكل</button><button class="key">0</button><button class="key wide" data-back="1">⌫</button>
+        </div>
+        <button class="primary-btn" id="amountNext" disabled>التالي</button>
+      </section>
+
+      <!-- TRANSFER: confirm -->
+      <section class="screen" data-screen="transfer-confirm">
+        <h2 class="screen-title" style="padding:0;">تأكيد التحويل</h2>
+        <p class="screen-desc" style="padding:0;">تأكد إن كل شي صح قبل لا تضغط تأكيد</p>
+        <div class="ticket">
+          <div class="ticket-row"><span class="ticket-label">تحويل لـ</span><b id="confirmName">—</b></div>
+          <div class="ticket-row"><span class="ticket-label">المبلغ</span><b id="confirmAmount">—</b></div>
+        </div>
+        <button class="primary-btn" id="confirmBtn">تأكيد التحويل ✅</button>
+        <button class="secondary-btn" id="editAmountBtn">أبي أغيّر المبلغ</button>
+      </section>
+
+      <!-- TRANSFER: success -->
+      <section class="screen" data-screen="transfer-success">
+        <div class="success-wrap">
+          <div class="success-check">✓</div>
+          <div class="success-title">تم التحويل بنجاح!</div>
+          <div class="success-sub" id="successSub">وصلت الفلوس على طول</div>
+        </div>
+        <button class="primary-btn" id="successHomeBtn">رجوع للرئيسية</button>
+      </section>
+
+      <!-- BILLS -->
+      <section class="screen" data-screen="bills">
+        <h2 class="screen-title" style="padding:0;">فواتيرك</h2>
+        <p class="screen-desc" style="padding:0;">اضغط "ادفع" جنب الفاتورة اللي تبيها</p>
+        <div class="contact-list">
+          <div class="list-row">
+            <div class="lr-main"><span class="lr-icon">💡</span>
+              <div><div class="lr-name">فاتورة الكهرباء</div><div class="lr-sub">180 ريال</div></div>
+            </div>
+            <button class="mini-btn" data-bill="كهرباء">ادفع</button>
+          </div>
+          <div class="list-row">
+            <div class="lr-main"><span class="lr-icon">📱</span>
+              <div><div class="lr-name">فاتورة الجوال</div><div class="lr-sub">65 ريال</div></div>
+            </div>
+            <button class="mini-btn" data-bill="جوال">ادفع</button>
+          </div>
+          <div class="list-row">
+            <div class="lr-main"><span class="lr-icon">💧</span>
+              <div><div class="lr-name">فاتورة الماء</div><div class="lr-sub">40 ريال</div></div>
+            </div>
+            <button class="mini-btn" data-bill="ماء">ادفع</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATEMENT -->
+      <section class="screen" data-screen="statement">
+        <h2 class="screen-title" style="padding:0;">آخر عملياتك</h2>
+        <div class="contact-list">
+          <div class="list-row">
+            <div class="lr-main"><span class="lr-icon">⬇️</span>
+              <div><div class="lr-name">راتب</div><div class="lr-sub">أمس</div></div>
+            </div>
+            <b style="color:var(--green);">+9,000</b>
+          </div>
+          <div class="list-row">
+            <div class="lr-main"><span class="lr-icon">⬆️</span>
+              <div><div class="lr-name">سحب صراف</div><div class="lr-sub">قبل يومين</div></div>
+            </div>
+            <b style="color:var(--red);">-500</b>
+          </div>
+          <div class="list-row">
+            <div class="lr-main"><span class="lr-icon">⬆️</span>
+              <div><div class="lr-name">فاتورة كهرباء</div><div class="lr-sub">قبل 3 أيام</div></div>
+            </div>
+            <b style="color:var(--red);">-180</b>
+          </div>
+        </div>
+      </section>
+
+      <!-- AGENT -->
+      <section class="screen" data-screen="agent">
+        <div class="success-wrap">
+          <div class="success-check" style="background:#eaf0fd; color:var(--anb-blue-2);">☎️</div>
+          <div class="success-title">احنا موجودين نساعدك</div>
+          <div class="success-sub">اضغط اتصال وبيرد عليك أحد فورًا، ما فيه انتظار طويل</div>
+        </div>
+        <a class="call-btn" href="tel:8001234567">📞 اتصل بنا الحين</a>
+        <a class="call-btn whatsapp" href="https://wa.me/966500000000" target="_blank" rel="noopener">💬 راسلنا واتساب</a>
+      </section>
+
+    </div>
+
+    <!-- assistant caption bar -->
+    <div class="assistant-bar">
+      <div class="ab-avatar">🤖</div>
+      <div class="ab-text" id="assistantText">هلا وغلا! أنا مساعدك، اضغط على أي زر وبشرح لك كل خطوة، خذ راحتك 😊</div>
+      <div class="ab-controls">
+        <button class="ab-btn" id="repeatBtn" title="كرر الشرح">🔁</button>
+        <button class="ab-btn" id="muteBtn" title="تشغيل/إيقاف الصوت">🔊</button>
+      </div>
+    </div>
+
+    <!-- bottom nav -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-nav="home"><span class="ni-icon">🏠</span>الرئيسية</button>
+      <button class="nav-item" data-nav="transfer-contact"><span class="ni-icon">💸</span>تحويل</button>
+      <button class="nav-item" data-nav="faq"><span class="ni-icon">🎙️</span>مساعد</button>
+      <button class="nav-item" data-nav="agent"><span class="ni-icon">☎️</span>مساعدة</button>
+    </nav>
+
+    <!-- FAQ overlay -->
+    <div class="overlay" id="faqOverlay">
+      <div class="sheet">
+        <div class="sheet-head">
+          <div class="sheet-title">🎙️ اسألني أي سؤال</div>
+          <button class="link-btn" id="faqClose">✕ إغلاق</button>
+        </div>
+        <div class="faq-item" data-a="عشان تحول فلوس: اضغط زر (حوّل فلوس) بالرئيسية، بعدين اختار الشخص اللي تبي تحول له، بعدين اكتب المبلغ، وأخيرًا اضغط تأكيد. بس كذا، سهلة!">
+          <div class="faq-q">كيف أحول فلوس؟ <span>+</span></div>
+          <div class="faq-a"></div>
+        </div>
+        <div class="faq-item" data-a="عشان تدفع فاتورة: اضغط زر (ادفع فاتورة) بالرئيسية، وبتشوف فواتيرك كلها قدامك، بس اضغط (ادفع) جنب الفاتورة اللي تبيها.">
+          <div class="faq-q">كيف أدفع فاتورة؟ <span>+</span></div>
+          <div class="faq-a"></div>
+        </div>
+        <div class="faq-item" data-a="رصيدك مكتوب كبير في أعلى الشاشة الرئيسية على طول، ما تحتاج تدور عليه.">
+          <div class="faq-q">وين ألقى رصيدي؟ <span>+</span></div>
+          <div class="faq-a"></div>
+        </div>
+        <div class="faq-item" data-a="لا تشيل هم، اضغط زر (أبغى أتكلم مع أحد) بالأسفل، وراح يتصل فيك موظف يساعدك فورًا.">
+          <div class="faq-q">ضاعت بطاقتي، أسوي وش؟ <span>+</span></div>
+          <div class="faq-a"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  const screenwrap = document.getElementById('screenwrap');
+  const homeHeader = document.getElementById('homeHeader');
+  const topbar = document.getElementById('topbar');
+  const screens = document.querySelectorAll('.screen');
+  const assistantText = document.getElementById('assistantText');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  const MESSAGES = {
+    'home': 'هلا وغلا! أنا مساعدك، اضغط على أي زر وبشرح لك كل خطوة، خذ راحتك 😊',
+    'transfer-contact': 'زين، الحين اختار لمين تبي تحول الفلوس، بس اضغط على اسمه.',
+    'transfer-amount': 'تمام، الحين اكتب كم تبي تحول من الأرقام تحت، أو اختار مبلغ جاهز.',
+    'transfer-confirm': 'شوف الملخص قدامك زين، إذا كل شي مضبوط اضغط تأكيد التحويل.',
+    'transfer-success': 'مبروك! التحويل تم بنجاح، الفلوس وصلت على طول.',
+    'bills': 'هذي فواتيرك، اضغط ادفع جنب أي فاتورة عشان تسددها.',
+    'statement': 'هذي آخر العمليات اللي سوّيتها في حسابك.',
+    'agent': 'لا تشيل هم، اضغط اتصل بنا وبيرد عليك موظف يساعدك فورًا.'
+  };
+
+  let history = ['home'];
+
+  function setAssistant(text){
+    assistantText.textContent = text;
+    speak(text);
+  }
+
+  function showScreen(name, opts){
+    opts = opts || {};
+    screens.forEach(s => s.classList.toggle('active', s.dataset.screen === name));
+    homeHeader.style.display = name === 'home' ? '' : 'none';
+    topbar.style.display = name === 'home' ? 'none' : 'flex';
+    navItems.forEach(n => n.classList.toggle('active', n.dataset.nav === name));
+    if (!opts.skipHistory) history.push(name);
+    if (MESSAGES[name]) setAssistant(MESSAGES[name]);
+  }
+
+  // ---- speech ----
+  let voices = [];
+  let voiceEnabled = true;
+  function loadVoices(){ voices = window.speechSynthesis ? speechSynthesis.getVoices() : []; }
+  if ('speechSynthesis' in window){
+    loadVoices();
+    speechSynthesis.onvoiceschanged = loadVoices;
+  }
+  function pickArabicVoice(){
+    return voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ar')) || null;
+  }
+  function speak(text){
+    if (!('speechSynthesis' in window) || !voiceEnabled) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'ar-SA';
+    const v = pickArabicVoice();
+    if (v) u.voice = v;
+    u.rate = 0.9;
+    speechSynthesis.speak(u);
+  }
+
+  document.getElementById('repeatBtn').addEventListener('click', () => {
+    speak(assistantText.textContent);
+  });
+  const muteBtn = document.getElementById('muteBtn');
+  muteBtn.addEventListener('click', () => {
+    voiceEnabled = !voiceEnabled;
+    muteBtn.textContent = voiceEnabled ? '🔊' : '🔇';
+    if (!voiceEnabled && 'speechSynthesis' in window) speechSynthesis.cancel();
+  });
+
+  // ---- font size ----
+  let fontStep = 0;
+  document.getElementById('fontPlus').addEventListener('click', () => {
+    fontStep = Math.min(fontStep + 1, 3);
+    screenwrap.style.setProperty('--font-scale', 1 + fontStep * 0.1);
+  });
+  document.getElementById('fontMinus').addEventListener('click', () => {
+    fontStep = Math.max(fontStep - 1, -1);
+    screenwrap.style.setProperty('--font-scale', 1 + fontStep * 0.1);
+  });
+
+  // ---- home grid actions ----
+  document.querySelectorAll('.big-btn[data-action]').forEach(btn => {
+    btn.addEventListener('click', () => showScreen(btn.dataset.action));
+  });
+
+  // ---- top bar back/home ----
+  document.getElementById('homeBtn').addEventListener('click', () => {
+    history = ['home'];
+    showScreen('home', { skipHistory: true });
+  });
+  document.getElementById('backBtn').addEventListener('click', () => {
+    if (history.length > 1) history.pop();
+    const prev = history[history.length - 1] || 'home';
+    showScreen(prev, { skipHistory: true });
+  });
+
+  // ---- bottom nav ----
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const target = item.dataset.nav;
+      if (target === 'faq'){ openFaq(); return; }
+      history = [target === 'home' ? 'home' : target];
+      if (target !== 'home') history.unshift('home');
+      showScreen(target, { skipHistory: true });
+    });
+  });
+
+  // ---- transfer: contacts ----
+  let chosenName = null;
+  document.getElementById('contactList').addEventListener('click', (e) => {
+    const row = e.target.closest('.contact-row');
+    if (!row) return;
+    chosenName = row.dataset.name;
+    showScreen('transfer-amount');
+  });
+
+  // ---- transfer: amount ----
+  let amountStr = '';
+  const amountDisplay = document.getElementById('amountDisplay');
+  const amountNext = document.getElementById('amountNext');
+  function renderAmount(){
+    amountDisplay.textContent = amountStr ? Number(amountStr).toLocaleString('en-US') + ' ريال' : '٠ ريال';
+    amountNext.disabled = !(amountStr && Number(amountStr) > 0);
+  }
+  document.getElementById('keypad').addEventListener('click', (e) => {
+    const key = e.target.closest('.key');
+    if (!key) return;
+    if (key.dataset.clear){ amountStr = ''; }
+    else if (key.dataset.back){ amountStr = amountStr.slice(0, -1); }
+    else if (amountStr.length < 6){ amountStr += key.textContent.trim(); }
+    renderAmount();
+  });
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      amountStr = chip.dataset.amt;
+      renderAmount();
+    });
+  });
+  amountNext.addEventListener('click', () => {
+    if (!amountStr) return;
+    document.getElementById('confirmName').textContent = chosenName || '—';
+    document.getElementById('confirmAmount').textContent = Number(amountStr).toLocaleString('en-US') + ' ريال';
+    showScreen('transfer-confirm');
+  });
+
+  // ---- transfer: confirm ----
+  document.getElementById('editAmountBtn').addEventListener('click', () => showScreen('transfer-amount'));
+  document.getElementById('confirmBtn').addEventListener('click', () => {
+    document.getElementById('successSub').textContent =
+      `وصلت ${Number(amountStr).toLocaleString('en-US')} ريال لـ ${chosenName || 'الشخص'} على طول`;
+    showScreen('transfer-success');
+  });
+  document.getElementById('successHomeBtn').addEventListener('click', () => {
+    amountStr = ''; renderAmount(); chosenName = null;
+    history = ['home'];
+    showScreen('home', { skipHistory: true });
+  });
+
+  // ---- bills ----
+  document.querySelectorAll('[data-bill]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.textContent = 'تم ✓';
+      btn.disabled = true;
+      btn.classList.add('paid');
+      setAssistant(`تمام، فاتورة ${btn.dataset.bill} تسددت، ما عليك شي ثاني.`);
+    });
+  });
+
+  // ---- fab mic + faq overlay ----
+  const faqOverlay = document.getElementById('faqOverlay');
+  function openFaq(){
+    faqOverlay.classList.add('active');
+    setAssistant('اضغط على أي سؤال عشان أشرح لك بالتفصيل.');
+  }
+  document.getElementById('fabMic').addEventListener('click', openFaq);
+  document.getElementById('faqClose').addEventListener('click', () => faqOverlay.classList.remove('active'));
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!wasOpen){
+        item.classList.add('open');
+        const answer = item.dataset.a;
+        item.querySelector('.faq-a').textContent = answer;
+        speak(answer);
+      }
+    });
+  });
+
+  renderAmount();
+})();
+</script>
+</body>
+</html>
